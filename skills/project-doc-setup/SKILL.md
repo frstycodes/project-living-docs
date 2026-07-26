@@ -45,7 +45,8 @@ them away.
    truth** — no `state.json`, no sidecar. Custom sources register against
    [`project-doc/references/source-contract.md`](../project-doc/references/source-contract.md).
    Seed `#doc-state` with `{"format": 2, "lastRun": null, "artifactUrl": null,
-   "cursors": {}}` — empty cursors mean init reads each source from the beginning.
+   "cursors": {}, "sources": {}}` — empty cursors mean init reads each source from
+   the beginning, and it fills `sources` with its `{read, recorded}` tally as it goes.
 6. **Hand off, build, and publish.** Invoke `project-doc` in its `init` branch: it
    reads the config, builds the document, runs `check.mjs`, and **publishes the
    first Artifact**, writing the returned URL back into `#doc-state.artifactUrl`

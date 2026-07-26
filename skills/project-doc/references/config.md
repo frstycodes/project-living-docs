@@ -149,6 +149,11 @@ back each run by `WebFetch`-ing the Artifact:
     "drive": { "0ABcDeFgH": "2026-07-23T18:02:11Z" },
     "pact": { "latitude": "2026-07-23T21:40:00Z" },
     "linear": "2026-07-23T20:00:00Z"
+  },
+  "sources": {
+    "github": { "read": 57, "recorded": 41 },
+    "slack":  { "read": 240, "recorded": 33 },
+    "pact":   { "read": 62, "recorded": 56 }
   }
 }
 ```
@@ -164,6 +169,17 @@ back each run by `WebFetch`-ing the Artifact:
   only once the document-timezone day has rolled over past it.
 - Cursors are keyed per source, per repo/branch where the source needs it, and
   under the custom source's `id` for custom sources.
+- **`sources`** is the **read/recorded tally** — one `{ read, recorded }` per
+  source. `read` is how many items the run paged past to the cursor floor (PRs +
+  issues, Slack messages, beads, commits); `recorded` is how many of them became a
+  cited item in the document. It exists to make **under-reading visible**: init
+  fills it, every refresh adds what it newly read/recorded, and the publish gate
+  both prints it and cross-checks `recorded` against the items actually rendered
+  (a tally that disagrees with the page, or a `read` far larger than `recorded`
+  with no reason, is flagged). `recorded < read` is normal — not every PR is a
+  timeline event — but `read: 8` against a 200-PR repo, or `recorded: 41` while the
+  page shows eight, is the sampling failure this field surfaces. Omit a source that
+  was not read this run; never fabricate the counts.
 
 Cursors advance by **republishing the document** — there is no separate file to
 write. A document from before this model may carry a sibling `state.json`; lift

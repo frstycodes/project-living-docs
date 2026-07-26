@@ -201,6 +201,39 @@ const disclosures = count(/<details class="disc/g);
 if (recordedItems >= 20 && disclosures / recordedItems < 0.35)
   warn(`only ${disclosures} disclosures for ~${recordedItems} recorded items — folded depth looks thin (the reference folds roughly one <details> per item). Are you cutting the full prose instead of folding it, or recording only a fraction of what the sources hold?`);
 
+// {SOURCE TALLY} — #doc-state.sources is the read/recorded count per source, the
+// one lever against under-reading. The checker can't see events that were never
+// read, but it CAN cross-check the claimed `recorded` against what the page
+// actually renders (both exist at build time), and flag a read≫recorded gap.
+const ICON_SOURCE = { 'i-github': 'github', 'i-commit': 'github', 'i-slack': 'slack',
+  'i-thread': 'slack', 'i-bead': 'pact', 'i-gmail': 'gmail', 'i-cal': 'calendar',
+  'i-drive': 'drive', 'i-link': 'link' };
+const renderedBySource = {};
+// match the cite's opening tag (attrs incl. a long href stay inside [^>]*), then
+// its icon <use> — robust to href length, unlike a fixed character window
+for (const m of html.matchAll(/class="cite"[^>]*>\s*<svg[^>]*>\s*<use href="#(i-[a-z0-9-]+)"/g)) {
+  const src = ICON_SOURCE[m[1]];
+  if (src) renderedBySource[src] = (renderedBySource[src] || 0) + 1;
+}
+const tally = state.value && state.value.sources;
+const anyCite = count(/class="cite"/g) > 0;
+if (!tally && anyCite && expectFormat === 3) {
+  warn('no #doc-state.sources read/recorded tally — init should record { read, recorded } per source so under-reading is visible (see config.md)');
+} else if (tally && typeof tally === 'object') {
+  for (const [src, t] of Object.entries(tally)) {
+    if (!t || typeof t !== 'object') continue;
+    const read = t.read, rec = t.recorded;
+    const actual = renderedBySource[src] || 0;
+    // the tally claims more recorded than the page shows — the numbers were not
+    // computed from the real render (or items were dropped after tallying)
+    if (rec != null && rec - actual > Math.max(5, actual))
+      warn(`#doc-state.sources.${src} claims recorded ${rec} but the page renders ~${actual} cited items of that kind — the tally disagrees with the document`);
+    // paged a lot, kept almost nothing — usually under-recording, occasionally real
+    if (read != null && rec != null && read >= 30 && rec < read * 0.1)
+      warn(`#doc-state.sources.${src}: read ${read} but recorded only ${rec} (<10%) — confirm that is real filtering, not sampling the source and dropping the rest`);
+  }
+}
+
 // {PREVIEW COVERAGE} — against the rendered HTML (previews built once, above)
 const cited = new Set([...html.matchAll(/data-cite="([^"]+)"/g)].map((m) => m[1]));
 for (const k of cited) if (!(k in previews)) err(`chip data-cite="${k}" has no #doc-previews entry — a dead hover`);

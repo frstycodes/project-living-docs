@@ -38,7 +38,23 @@ if (!clean) {
   process.exit(1);
 }
 
-const sha = createHash('sha256').update(readFileSync(path)).digest('hex');
+const bytes = readFileSync(path);
+const sha = createHash('sha256').update(bytes).digest('hex');
+
+// Surface the read/recorded tally on publish — the one glance that makes
+// under-reading visible. A source that read hundreds but recorded a handful is
+// the sampling failure the checker warns on; here it is just printed, plainly.
+try {
+  const m = bytes.toString('utf8').match(/<script type="application\/json" id="doc-state">([\s\S]*?)<\/script>/);
+  const sources = m && JSON.parse(m[1]).sources;
+  if (sources && typeof sources === 'object' && Object.keys(sources).length) {
+    console.log('\n   sources read → recorded:');
+    for (const [src, t] of Object.entries(sources)) {
+      if (t && typeof t === 'object') console.log(`     ${src.padEnd(10)} ${t.read ?? '?'} read → ${t.recorded ?? '?'} recorded`);
+    }
+  }
+} catch { /* tally is a nicety, never a reason to block a clean build */ }
+
 console.log(`\n✅ PUBLISH-OK  sha256=${sha}`);
 console.log('   Publish EXACTLY this file to the Artifact. Do not edit it after this line —');
 console.log('   any change re-opens the gate, so re-run this command on the final bytes.');

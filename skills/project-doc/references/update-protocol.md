@@ -33,8 +33,10 @@ tiers of work, and self-paces the expensive one — there is **one** hourly rout
 not two schedules:
 
 - **Every run (cheap, mechanical):** advance cursors for succeeded sources;
-  **auto-check watched todos** (below); append genuinely new events and lane items
-  from the window; patch the sections those cite. This is pure data patching —
+  **bump `#doc-state.sources`** — add this run's newly read and newly recorded
+  counts to each source's `{read, recorded}` tally (the gate prints and
+  cross-checks it); **auto-check watched todos** (below); append genuinely new
+  events and lane items from the window; patch the sections those cite. This is pure data patching —
   a handful of field flips and array appends — so it is fast and near-free in
   tokens. Most hours are a no-op and publish nothing.
 - **Once a day (expensive, synthetic):** regenerate the Today brief and its

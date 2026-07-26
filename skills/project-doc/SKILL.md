@@ -30,7 +30,11 @@ in full, and a build that skips them is thin and broken even though it "renders"
    highlight reel. Page each source all the way back to its cursor floor: a mature
    project has dozens of timeline events, dozens of decisions, dozens of glossary
    terms — recording ten of fifty is the biggest, most invisible data loss this
-   doc can suffer. See "The richness floor" in `sections.md`.
+   doc can suffer. See "The richness floor" in `sections.md`. **Record the tally:**
+   as you read, write `{ read, recorded }` per source into `#doc-state.sources`
+   (see [`config.md`](references/config.md)) — the gate prints it and cross-checks
+   `recorded` against the page, so a source that read hundreds and recorded a
+   handful is visible on every publish.
 4. **The publish gate blesses the file before you publish.** Run
    `node references/publish-gate.mjs <path>` on the built file. It runs `check.mjs`
    (a text Today, dead hovers, thin previews and every structural invariant) and
