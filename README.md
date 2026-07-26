@@ -41,38 +41,50 @@ Then restart / reload so the skills register.
 ## Use
 
 Do the **first run in Claude Code web** — it needs GitHub access and the Artifact
-tool to publish. The web app has **no local skills**, so you don't `/plugin install`
-ahead of time; instead paste one of the setup prompts below, which install the
-plugin from GitHub and then run the setup. Pick the repo when prompted.
+tool to publish. The web app has **no local skills and no `/plugin`**, so you don't
+install anything: the setup prompt tells the agent to **`curl` the skill straight
+from GitHub and follow it**. Pick the repo when prompted.
+
+The skills live under one raw base:
+
+```
+https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/
+```
 
 **Set up a project's living document** — paste in a Claude Code web session opened
 on the repo:
 
 ```
-/plugin marketplace add frstycodes/project-living-docs
-/plugin install project-living-docs@project-living-docs
+Set up my project living document. The skill is on GitHub — fetch it and follow it:
 
-Now run /project-doc-setup for this repository: interview me for sources and the
-goal, build the first living document, publish it as a private Artifact, and hand
-me a paste-ready prompt to schedule an hourly refresh routine.
+  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc-setup/SKILL.md
+
+Follow that SKILL.md exactly. It links to sibling files with relative paths
+(references/…, ../project-doc/…); resolve each against the same base
+(…/main/skills/…) and curl it when the skill says to read it. The locked .mjs
+files (doc-render.mjs, check.mjs, doc-slice.mjs, …) are fetched the same way and
+run with node. Do the interview, build the first document, publish it as a private
+Artifact, and hand me a paste-ready prompt to schedule an hourly refresh routine.
 ```
 
 **Set up the standalone daily brief** — paste in any Claude Code web session:
 
 ```
-/plugin marketplace add frstycodes/project-living-docs
-/plugin install project-living-docs@project-living-docs
+Set up my standalone daily brief. The skill is on GitHub — fetch it and follow it:
 
-Now run /daily-brief-setup: ask what my standalone daily brief covers and where it
-goes, build the first one, publish it as a private Artifact, and hand me a
-paste-ready prompt to rebuild it each morning.
+  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/daily-brief-setup/SKILL.md
+
+Follow that SKILL.md exactly, curling any file it references from the same base
+(…/main/skills/…). Ask what my brief covers and where it goes, build the first one,
+publish it as a private Artifact, and hand me a paste-ready prompt to rebuild it
+each morning.
 ```
 
 Setup answers the source and goal questions (with "decide for me" wherever an
 answer can be derived), builds the first document, publishes a **private**
 Artifact, and hands you a **paste-ready routine prompt**. That routine prompt
-also installs the plugin from GitHub, then refreshes on a schedule — you paste it
-into a new claude.ai/code routine and pick the repo; the routine drafts its own
+also curls the refresh skill from GitHub, then refreshes on a schedule — you paste
+it into a new claude.ai/code routine and pick the repo; the routine drafts its own
 cron. The expensive synthesis (Today painting, goal re-evaluation) self-gates to
 once a day, so most hourly runs publish nothing. **The refresh never posts to a
 project channel** — it publishes silently to the same bookmarked URL, with an

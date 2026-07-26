@@ -29,18 +29,20 @@ If they accept, give them exactly two things.
 
 ### 1. The paste-ready routine prompt
 
-A cloud routine has **no local skills access**, so the prompt installs the plugin
-from GitHub first, then runs its refresh command — it does not "invoke the
-project-doc skill". Fill in the real `artifactUrl` (and drop or keep the DM line
-per the user's choice), then hand it over verbatim in a fenced block:
+A cloud routine has **no local skills and no `/plugin`**, so the prompt tells the
+agent to `curl` the refresh skill from GitHub and follow it — it does not "invoke
+the project-doc skill". Fill in the real `artifactUrl` (and drop or keep the DM
+line per the user's choice), then hand it over verbatim in a fenced block:
 
 ```
-First, install the living-docs plugin from GitHub:
-  /plugin marketplace add frstycodes/project-living-docs
-  /plugin install project-living-docs@project-living-docs
+Every hour, keep this repo's living project document current. The skill is on
+GitHub — fetch it and follow its refresh branch:
 
-Then, every hour, keep this repo's living project document current by running
-/project-doc-refresh:
+  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc/SKILL.md
+
+Follow that SKILL.md's refresh branch exactly, curling any file it references
+(references/update-protocol.md, doc-slice.mjs, doc-render.mjs, check.mjs, …) from
+the same base (…/main/skills/…) and running the .mjs files with node. Concretely:
 - Fetch the published Artifact at <ARTIFACT_URL> and slice its #doc-data.
 - Query each source configured in the doc's #doc-config for activity since its
   cursor, patch only what changed, auto-check any todos whose PR merged or bead
@@ -53,10 +55,10 @@ Then, every hour, keep this repo's living project document current by running
 - A source unreachable in this environment is skipped and noted, never a failure.
 ```
 
-Use the real GitHub slug — `frstycodes/project-living-docs`. Tell them the
-routine's Claude turns "every hour" into a concrete cron (an off-minute, so a
-fleet doesn't all wake on the hour) — they don't write one. Hourly is cheap by
-design; if they'd rather, they can just say "every morning" in the prompt instead.
+Tell them the routine's Claude turns "every hour" into a concrete cron (an
+off-minute, so a fleet doesn't all wake on the hour) — they don't write one.
+Hourly is cheap by design; if they'd rather, they can just say "every morning" in
+the prompt instead.
 
 ### 2. The clicks
 

@@ -119,29 +119,31 @@ Identical pattern to `project-doc-setup` — the same rules, for the same reason
 
 Hand the user two things — the same handoff local or in Code web:
 
-1. **The paste-ready routine prompt.** A cloud routine has **no local skills
-   access**, so the prompt installs the plugin from GitHub first, then runs its
-   command — it does not "invoke the daily-brief skill". Fill in the real
+1. **The paste-ready routine prompt.** A cloud routine has **no local skills and no
+   `/plugin`**, so the prompt tells the agent to `curl` the brief skill from GitHub
+   and follow it — it does not "invoke the daily-brief skill". Fill in the real
    `artifactUrl` and config:
 
    ```
-   First, install the living-docs plugin from GitHub:
-     /plugin marketplace add frstycodes/project-living-docs
-     /plugin install project-living-docs@project-living-docs
+   Every morning, rebuild my standalone daily brief. The skill is on GitHub —
+   fetch it and follow it:
 
-   Then, every morning, rebuild my standalone daily brief by running
-   /daily-brief with scope: all and the config below. It is a stateless snapshot —
-   rebuild the whole brief for today from Slack, Gmail, Calendar, GitHub and Drive,
-   republish to the SAME Artifact URL <ARTIFACT_URL>, and DM me the link every run
-   (a morning brief always notifies — my own DM, never a shared channel). A source
-   that is down produces a thinner brief with the gap noted, never a failed run.
+     curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/daily-brief/SKILL.md
+
+   Follow that SKILL.md exactly, curling any file it references (references/…,
+   shell.css, shell.js, sprite.svg, components.md) from the same base
+   (…/main/skills/daily-brief/…). Run it with scope: all and the config below. It
+   is a stateless snapshot — rebuild the whole brief for today from Slack, Gmail,
+   Calendar, GitHub and Drive, republish to the SAME Artifact URL <ARTIFACT_URL>,
+   and DM me the link every run (a morning brief always notifies — my own DM, never
+   a shared channel). A source that is down produces a thinner brief with the gap
+   noted, never a failed run.
 
    Config: <paste the config.json contents>
    ```
 
-   Use the real GitHub slug — `frstycodes/project-living-docs`. Tell them the
-   routine's Claude turns "every morning" into an off-minute cron (e.g. `07:07`) —
-   they don't write one.
+   Tell them the routine's Claude turns "every morning" into an off-minute cron
+   (e.g. `07:07`) — they don't write one.
 
 2. **The clicks:** open claude.ai/code → new routine → paste the prompt → save.
    Its first run self-verifies against the real cloud environment, flagging any
