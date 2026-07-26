@@ -60,9 +60,11 @@ it sharpen on later runs. Withhold it only where the answer is the user's to giv
   them add to it, or offer **"decide for me"** (watch the obvious senders now,
   refine which mail is project-relevant as real mail arrives). "Decide for me"
   here means: default to everything, and narrow only if the brief gets noisy.
-- **Where it goes.** The `out` path — a stable location the user opens each
-  morning. Default `~/daily-brief/brief.html`. **Needs the user** (it's their
-  preference), though the default stands if they shrug.
+- **Where it goes — do not ask.** The brief **always** publishes to a Claude
+  Artifact; that private URL is what the user opens each morning. There is no
+  file-location question. The `out` path is only an internal scratch file the build
+  writes before publishing — default it silently to a temp path
+  (`~/.claude/daily-brief/brief.html`) and never surface it.
 - **When it runs** (only if scheduling) — the morning hour. **Offer "decide for
   me"**: default an **off-minute** time like `07:07`, so a fleet of briefs does
   not all wake at `07:00`.
@@ -76,7 +78,7 @@ it sharpen on later runs. Withhold it only where the answer is the user's to giv
 ```json
 {
   "scope": "all",
-  "out": "/Users/you/daily-brief/brief.html",
+  "out": "~/.claude/daily-brief/brief.html",
   "artifactUrl": null,
   "sources": {
     "calendarIds": ["primary"],
@@ -89,8 +91,9 @@ it sharpen on later runs. Withhold it only where the answer is the user's to giv
 ```
 
 - `scope` is always `all` for the standalone brief.
-- `out` is the file the brief overwrites each run (a build artifact; the Artifact
-  is what the user actually opens).
+- `out` is an internal scratch file the build writes before publishing — never a
+  user-chosen location and never surfaced in the interview. The **Artifact** is
+  what the user actually opens; the brief always publishes there.
 - `artifactUrl` is where the brief is published; each run republishes there in
   place. Null until the first publish.
 - `sources` narrows what the brief includes; every empty list means "no filter,
