@@ -1,0 +1,13 @@
+{
+  "name": "project-living-docs",
+  "owner": {
+    "name": "frsty"
+  },
+  "plugins": [
+    {
+      "name": "project-living-docs",
+      "source": "./",
+      "description": "Living project documents + standalone daily brief. Setup once, refresh on a schedule, publish to Claude Artifacts."
+    }
+  ]
+}

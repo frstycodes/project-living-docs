@@ -1,0 +1,20 @@
+{
+  "name": "project-living-docs",
+  "version": "0.1.0",
+  "description": "Living project documents and a standalone daily brief — one self-contained, self-hosting HTML page per project, rebuilt on a schedule from Slack, GitHub, Gmail, Calendar, Drive and Pact. Data-model driven, published to Claude Artifacts, surgically refreshed hourly.",
+  "author": {
+    "name": "frsty"
+  },
+  "license": "MIT",
+  "keywords": [
+    "project-doc",
+    "daily-brief",
+    "living-document",
+    "onboarding",
+    "changelog",
+    "artifacts",
+    "scheduled",
+    "slack",
+    "github"
+  ]
+}
