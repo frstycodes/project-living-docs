@@ -30,29 +30,18 @@ If they accept, give them exactly two things.
 ### 1. The paste-ready routine prompt
 
 A cloud routine has **no local skills and no `/plugin`**, so the prompt tells the
-agent to `curl` the refresh skill from GitHub and follow it — it does not "invoke
-the project-doc skill". Fill in the real `artifactUrl` (and drop or keep the DM
-line per the user's choice), then hand it over verbatim in a fenced block:
+agent to `curl` the refresh skill from GitHub and follow it — the SKILL.md's
+refresh branch carries the whole protocol, so the prompt states only what the skill
+can't: *which* Artifact, and the notify choice. Fill in the real `artifactUrl` (and
+drop or keep the DM line per the user's choice):
 
 ```
-Every hour, keep this repo's living project document current. The skill is on
-GitHub — fetch it and follow its refresh branch:
-
+Every hour, refresh my project living document. Fetch this skill and follow its
+refresh branch exactly:
   curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc/SKILL.md
-
-Follow that SKILL.md's refresh branch exactly, curling any file it references
-(references/update-protocol.md, doc-slice.mjs, doc-render.mjs, check.mjs, …) from
-the same base (…/main/skills/…) and running the .mjs files with node. Concretely:
-- Fetch the published Artifact at <ARTIFACT_URL> and slice its #doc-data.
-- Query each source configured in the doc's #doc-config for activity since its
-  cursor, patch only what changed, auto-check any todos whose PR merged or bead
-  closed, render, validate with check.mjs, and republish to the SAME Artifact URL.
-- The expensive daily synthesis (Today, goal re-evaluation) self-gates on
-  #doc-state.lastDaily — most hours there is nothing to do, and that is correct:
-  publish nothing on those runs.
-- Notify: publish silently. On a run that changed something, DM me the doc's URL —
-  never post to a project or shared channel. (Omit this line for no ping at all.)
-- A source unreachable in this environment is skipped and noted, never a failure.
+Resolve referenced files against the same base (…/main/skills/…), run .mjs with node.
+Refresh the doc at <ARTIFACT_URL>. Publish silently; on a change, DM me the URL —
+never a project or shared channel. (Drop the DM clause for no ping at all.)
 ```
 
 Tell them the routine's Claude turns "every hour" into a concrete cron (an

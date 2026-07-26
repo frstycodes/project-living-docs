@@ -121,23 +121,17 @@ Hand the user two things — the same handoff local or in Code web:
 
 1. **The paste-ready routine prompt.** A cloud routine has **no local skills and no
    `/plugin`**, so the prompt tells the agent to `curl` the brief skill from GitHub
-   and follow it — it does not "invoke the daily-brief skill". Fill in the real
-   `artifactUrl` and config:
+   and follow it. The SKILL.md carries the build; the prompt states only what it
+   can't — `scope: all`, the config, the Artifact URL, and the DM:
 
    ```
-   Every morning, rebuild my standalone daily brief. The skill is on GitHub —
-   fetch it and follow it:
-
+   Every morning, rebuild my standalone daily brief. Fetch this skill and follow
+   it exactly:
      curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/daily-brief/SKILL.md
-
-   Follow that SKILL.md exactly, curling any file it references (references/…,
-   shell.css, shell.js, sprite.svg, components.md) from the same base
-   (…/main/skills/daily-brief/…). Run it with scope: all and the config below. It
-   is a stateless snapshot — rebuild the whole brief for today from Slack, Gmail,
-   Calendar, GitHub and Drive, republish to the SAME Artifact URL <ARTIFACT_URL>,
-   and DM me the link every run (a morning brief always notifies — my own DM, never
-   a shared channel). A source that is down produces a thinner brief with the gap
-   noted, never a failed run.
+   Resolve referenced files against the same base (…/main/skills/daily-brief/…),
+   run any .mjs with node. Build with scope: all and the config below, republish to
+   the SAME Artifact URL <ARTIFACT_URL>, and DM me the link every run (my own DM,
+   never a shared channel).
 
    Config: <paste the config.json contents>
    ```

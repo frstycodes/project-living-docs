@@ -51,46 +51,36 @@ The skills live under one raw base:
 https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/
 ```
 
+The prompt only points the agent at a skill and how to reach its sibling files —
+the SKILL.md carries the interview, build, publish and routine-handoff steps
+itself, so you don't restate them.
+
 **Set up a project's living document** — paste in a Claude Code web session opened
 on the repo:
 
 ```
-Set up my project living document. The skill is on GitHub — fetch it and follow it:
-
+Fetch this skill and follow it exactly:
   curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc-setup/SKILL.md
-
-Follow that SKILL.md exactly. It links to sibling files with relative paths
-(references/…, ../project-doc/…); resolve each against the same base
-(…/main/skills/…) and curl it when the skill says to read it. The locked .mjs
-files (doc-render.mjs, check.mjs, doc-slice.mjs, …) are fetched the same way and
-run with node. Do the interview, build the first document, publish it as a private
-Artifact, and hand me a paste-ready prompt to schedule an hourly refresh routine.
+It references sibling files with relative paths — resolve each against the same
+base (…/main/skills/…) and run any .mjs with node.
 ```
 
-**Set up the standalone daily brief** — paste in any Claude Code web session:
+**Set up the standalone daily brief** — same, one path change:
 
 ```
-Set up my standalone daily brief. The skill is on GitHub — fetch it and follow it:
-
+Fetch this skill and follow it exactly:
   curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/daily-brief-setup/SKILL.md
-
-Follow that SKILL.md exactly, curling any file it references from the same base
-(…/main/skills/…). Ask what my brief covers and where it goes, build the first one,
-publish it as a private Artifact, and hand me a paste-ready prompt to rebuild it
-each morning.
+Resolve referenced files against the same base (…/main/skills/…), run any .mjs with node.
 ```
 
-**If `curl` to raw GitHub is blocked**, clone once and follow the files on disk —
-swap the `curl` line for this and point at the same SKILL.md under the clone:
+**If `curl` to raw GitHub is blocked**, clone once and point at the file on disk:
 
 ```
-git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
+Clone the skill repo and follow it exactly:
+  git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
+Read /tmp/pld/skills/project-doc-setup/SKILL.md — referenced files and the .mjs are
+in the clone; run .mjs with node.
 ```
-
-e.g. *"Read `/tmp/pld/skills/project-doc-setup/SKILL.md` and follow it exactly —
-every referenced file (references/…, ../project-doc/…, the locked .mjs) is in that
-clone; run the .mjs with node."* Same for `daily-brief-setup` and for the routine
-prompt (`skills/project-doc/SKILL.md`, refresh branch).
 
 Setup answers the source and goal questions (with "decide for me" wherever an
 answer can be derived), builds the first document, publishes a **private**
