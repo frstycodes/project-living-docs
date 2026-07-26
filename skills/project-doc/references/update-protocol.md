@@ -267,13 +267,16 @@ with offset, and `#doc-data.meta.updatedAt` (the renderer puts it in the dial).
 style, sprites, that body, the inline state blocks (with the patched `#doc-data`), the
 scripts. The markup is generated — you never hand-edit it.
 
-Validate the assembled document **before it is published**:
+Gate the assembled document **before it is published** — one command, one go/no-go:
 
 ```
-node <skill-dir>/references/check.mjs <assembled-file>
+node <skill-dir>/references/publish-gate.mjs <assembled-file>
 ```
 
-This runs both passes — the `#doc-data` schema/cross-refs and the rendered-HTML sanity. Fix
+The gate runs `check.mjs` (both passes — the `#doc-data` schema/cross-refs and the
+rendered-HTML sanity) and prints `PUBLISH-OK sha256=…` only when clean; on any error it prints
+`DO NOT PUBLISH` and exits non-zero. Publish only the exact file it blessed — editing after the
+gate re-opens it, so re-run on the final bytes. Fix
 every error and re-run until clean. **If it cannot be made clean, do not publish** — the
 previously published Artifact stays live, cursors are not advanced (they are inside the doc
 you did not publish), notify the failure, exit non-zero. This is the integrity-failure branch:

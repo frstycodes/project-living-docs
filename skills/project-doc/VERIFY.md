@@ -10,7 +10,7 @@ local — that is the environment the routine will use.
 - [ ] `node references/doc-render.test.mjs` → `12 passed`
 - [ ] `node references/doc-data-check.test.mjs` → `12 passed`
 - [ ] `node references/doc-migrate.test.mjs` → `13 passed`
-- [ ] `node --check` passes on `doc-render.mjs`, `doc-migrate.mjs`, `doc-data-check.mjs`, `check.mjs`
+- [ ] `node --check` passes on `doc-render.mjs`, `doc-migrate.mjs`, `doc-data-check.mjs`, `check.mjs`, `publish-gate.mjs`
 - [ ] daily-brief `shell.js`, `sprite.svg` resolve from where the skill expects them
 
 ## 1. Setup (`project-doc-setup`, in Code web)
@@ -26,6 +26,7 @@ local — that is the environment the routine will use.
 
 - [ ] Build writes `#doc-data` (JSON), runs `renderBody`, assembles the document
 - [ ] `node references/check.mjs <file>` → `clean` (both passes: data + rendered HTML)
+- [ ] `node references/publish-gate.mjs <file>` → `PUBLISH-OK sha256=…`; the published bytes match that sha (nothing edited after the gate)
 - [ ] Published as a **private** Artifact; `#doc-state.artifactUrl` now holds the returned URL
 - [ ] `#doc-state.format` is **3**; `cursors` seeded at newest-seen per source
 - [ ] Both sprites inlined (open the URL: brand icons — Slack/GitHub/Cal/Drive — are visible, not empty boxes)

@@ -42,8 +42,9 @@ Every hour, refresh my project living document. Clone the skill and follow its
 refresh branch exactly:
   git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
 Read /tmp/pld/skills/project-doc/SKILL.md and follow the refresh branch, including
-every reference file it links. Run the locked .mjs with node, and do NOT republish
-unless `node check.mjs` on the built file exits clean.
+every reference file it links. Run the locked .mjs with node. Before republishing,
+run `node /tmp/pld/skills/project-doc/references/publish-gate.mjs <built-file>` and
+republish ONLY the exact file it blesses with PUBLISH-OK — never a file it refuses.
 Refresh the doc at <ARTIFACT_URL>. Publish silently; on a change, DM me the URL —
 never a project or shared channel. (Drop the DM clause for no ping at all.)
 ```

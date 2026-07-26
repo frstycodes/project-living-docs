@@ -60,9 +60,10 @@ on the repo:
 Clone this skill and follow it exactly:
   git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
 Read /tmp/pld/skills/project-doc-setup/SKILL.md and follow it — including every
-reference file it links (references/…, ../project-doc/…). Run the locked .mjs
-(doc-render.mjs, check.mjs, doc-slice.mjs) with node, and do NOT publish unless
-`node check.mjs` on the built file exits clean.
+reference file it links (references/…, ../project-doc/…). Run the locked .mjs with
+node. Before publishing, run
+`node /tmp/pld/skills/project-doc/references/publish-gate.mjs <built-file>` and
+publish ONLY the exact file it blesses with PUBLISH-OK — never one it refuses.
 ```
 
 **Set up the standalone daily brief** — same, one path change:
@@ -82,7 +83,7 @@ Fetch this skill AND its reference files and follow it exactly:
   curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc-setup/SKILL.md
 Every file it links (references/…, ../project-doc/…, the .mjs) lives under
 …/main/skills/… — curl each one the skill tells you to read; run .mjs with node;
-do not publish unless check.mjs exits clean.
+publish only a file `node publish-gate.mjs <built-file>` blesses with PUBLISH-OK.
 ```
 
 Setup answers the source and goal questions (with "decide for me" wherever an

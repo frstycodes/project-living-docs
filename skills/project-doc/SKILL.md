@@ -28,10 +28,14 @@ in full, and a build that skips them is thin and broken even though it "renders"
    surface and a `<details>` disclosure holding the full prose verbatim — and the
    recorded sections carry *what happened*, not a highlight reel. See "The richness
    floor" in `sections.md`.
-4. **`check.mjs` exits clean before you publish.** Run
-   `node references/check.mjs <path>` on the built file. It mechanically catches a
-   text Today, dead hovers, thin previews and every structural invariant. **Do not
-   publish a file it errors on** — fix the data and re-render.
+4. **The publish gate blesses the file before you publish.** Run
+   `node references/publish-gate.mjs <path>` on the built file. It runs `check.mjs`
+   (a text Today, dead hovers, thin previews and every structural invariant) and
+   prints `PUBLISH-OK sha256=…` **only** if clean; otherwise it prints the errors
+   and `DO NOT PUBLISH` and exits non-zero. **Publish only a file the gate blessed,
+   and publish exactly those bytes** — editing after the gate re-opens it, so
+   re-run it on the final bytes. This is the one go/no-go; there is no publishing
+   around it.
 
 ## Where it lives
 
@@ -60,9 +64,9 @@ The document is assembled in this order, all inline, no external requests:
 5. State blocks, all inline because the Artifact is the single source of truth: `id="doc-data"` — the content the body was rendered from, and the surface the next run patches. `id="doc-state"` — cursors, `lastRun`, `artifactUrl`, `archiveArtifactUrl`, `format` (**3**). `id="doc-config"` — the full config (scope, `you`, `brief`, `timezone`, `locale`). `id="doc-allowlist"` — the host allowlist. `id="doc-previews"` — the citation preview payloads, baked so a hover card never fetches anything.
 6. `<script>` — the contents of the daily-brief `shell.js`, then `references/doc-shell.js`.
 
-The body's markup is generated, so a build is: write/patch `#doc-data` → `node doc-render.mjs` → assemble → `node references/check.mjs` → publish. `check.mjs` validates `#doc-data` (the source of truth) and then the rendered HTML (see [`references/update-protocol.md`](references/update-protocol.md)).
+The body's markup is generated, so a build is: write/patch `#doc-data` → `node doc-render.mjs` → assemble → `node references/publish-gate.mjs <path>` → publish only on `PUBLISH-OK`. The gate runs `check.mjs`, which validates `#doc-data` (the source of truth) and then the rendered HTML (see [`references/update-protocol.md`](references/update-protocol.md)); the gate refuses and exits non-zero on any error.
 
-`doc-components.css`, `doc-sprite.svg`, `doc-shell.js`, `doc-render.mjs`, `doc-data-check.mjs`, `doc-slice.mjs`, `doc-migrate.mjs` and `check.mjs` are **locked**: copy them verbatim, never edit them, never add a `<style>` of your own, and never hand-write the markup they generate. If a section needs a look the renderer does not provide, it takes a `prose` layout (the generic escape hatch) — you never reach for raw markup. Locked means locked *per run* — upgrading a document to newer assets is the "Re-shell" operation in [`references/update-protocol.md`](references/update-protocol.md), its own named run.
+`doc-components.css`, `doc-sprite.svg`, `doc-shell.js`, `doc-render.mjs`, `doc-data-check.mjs`, `doc-slice.mjs`, `doc-migrate.mjs`, `check.mjs` and `publish-gate.mjs` are **locked**: copy them verbatim, never edit them, never add a `<style>` of your own, and never hand-write the markup they generate. If a section needs a look the renderer does not provide, it takes a `prose` layout (the generic escape hatch) — you never reach for raw markup. Locked means locked *per run* — upgrading a document to newer assets is the "Re-shell" operation in [`references/update-protocol.md`](references/update-protocol.md), its own named run.
 
 ## Two colours, and only two
 

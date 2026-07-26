@@ -24,10 +24,13 @@ mechanics; the editorial protocol is [`update-protocol.md`](update-protocol.md).
    scheduled loop uses the slice.)
 2. **Patch** the sliced `#doc-data` per the refresh protocol — cheap-tier field
    flips and appends, plus the daily tier when `lastDaily` says so.
-3. **Render and validate.** `renderBody` the patched `#doc-data`, reassemble the
-   document, run `check.mjs` (both passes). **Not clean → do not publish** (see
-   Rollback).
-4. **Publish** with the `Artifact` tool, passing the existing `url` so it
+3. **Render and gate.** `renderBody` the patched `#doc-data`, reassemble the
+   document, then run `node references/publish-gate.mjs <assembled-file>`. It runs
+   `check.mjs` (both passes) and prints `PUBLISH-OK sha256=…` only when clean; on
+   any error it prints `DO NOT PUBLISH` and exits non-zero. **Publish only a file
+   the gate blessed, and publish exactly those bytes** — the gate is the one
+   go/no-go (see Rollback).
+4. **Publish** the blessed file with the `Artifact` tool, passing the existing `url` so it
    redeploys **in place** to the same address. Carry a short `label` (the run
    date) so the Artifact's version history is legible for rollback.
 5. **Store** the URL. On the very first publish (init) the tool returns a fresh
