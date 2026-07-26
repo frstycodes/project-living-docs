@@ -30,8 +30,9 @@ names, Pact/beads project key. An item matching **none** of those is excluded.
 
 First-time configuration of the **standalone** brief and putting it on a morning
 schedule belong to the sibling `daily-brief-setup` skill — it interviews the user,
-writes `~/.claude/daily-brief/config.json`, builds the first brief, and creates a
-Claude Code cloud routine. This skill stays a pure builder.
+writes `~/.claude/daily-brief/config.json`, builds the first brief, and hands the
+user a paste-ready prompt for a Claude Code cloud routine. This skill stays a pure
+builder.
 
 A scheduled/unattended run reads that config, passes its `scope`, `out` and
 `sources` into the build order below — a full rebuild, never a patch — then

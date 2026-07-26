@@ -84,6 +84,53 @@ disclosure would sit inside another box. **A card inside a card is always wrong.
 
 ---
 
+# The richness floor
+
+**This is not a style preference. It is the difference between this document and a
+bullet-point summary, and a run that trades it away has failed the same way a run
+that drops a section has failed. Read it with the disclosure rule — they are the
+two halves of the same promise: nothing observed is lost, it is only folded.**
+
+A run economising on tokens will quietly collapse two things — the second altitude
+of every item, and the preview payloads behind the chips. Both are the information.
+The floors, non-negotiable:
+
+1. **Every item that has depth carries a disclosure holding that depth verbatim.**
+   Not a paraphrase, not "the gist is enough". If a Slack thread ran twelve
+   messages, the visible line is the outcome and the `.disc-body` carries the
+   reasoning, the names, the quotes. An item collapsed to a lone one-liner when the
+   source had more is a defect. (The disclosure rule, applied to content.)
+
+2. **Every cited item that *can* resolve to a preview *must* carry one.** A chip
+   with a resolvable PR / bead / Slack / calendar / drive behind it and no
+   `data-cite` + `#doc-previews` payload is a bare link where a hydrated card was
+   available — the single most common way this document gets thinner than its
+   sources. The target is near-total: on a healthy build, the large majority of
+   chips carry a payload, and a run that emits mostly bare links has under-fetched.
+   Fill the payload from data you already read to resolve the citation — you are
+   not making a second fetch, you are keeping what the first one returned.
+
+3. **Carry the source's own words and faces.** A PR preview keeps its real title,
+   author, avatar, additions/deletions. A Slack preview keeps the **verbatim
+   message text** and the author's face (inlined as a `data:` URI — see "The
+   preview payload"). A bead keeps its status and assignee. Summarising these into
+   the doc's own voice and discarding the originals is loss, not editing.
+
+4. **Completeness over curation in the recorded sections.** What's New, Timeline
+   and Current State record *what happened* — every decision, pivot, incident,
+   milestone and shipped item the sources show, each cited, not a hand-picked
+   highlight reel. Curation is the visible line's job (one line each); the record
+   is the disclosure's and the preview's. Ten timeline events where the sources
+   support fifty is a summary wearing this document's chrome.
+
+The self-check before publishing: **would a reader who opened every disclosure and
+hovered every chip learn as much as a reader of the raw sources would?** If the
+answer is no, the run cut depth it was supposed to fold. The `.sec-lead` "Today is
+the tone" line governs the *visible surface* — one line per item, sparse by
+folding. It never licenses a thinner *record*.
+
+---
+
 # The dial
 
 The document's navigation is one floating button, fixed bottom-right, whose
@@ -472,6 +519,17 @@ a bullet. Every marker comes from one of the two sprites.
   `section.sec` — the brief brings its own `<section>` rhythm from `shell.css`.
 - if the sibling skill is unavailable, render `#panel-today` as a single `.callout.quiet`
   saying the brief could not be generated, and carry on with the other six tabs.
+
+**Today is the interactive brief, never a text stand-in.** The one acceptable
+outputs for `#panel-today` are (a) the real `daily-brief` `scope: project`
+fragment — the same painting, item rows, checkable to-dos, avatars and hover
+detail the standalone brief has — or (b) the single `.callout.quiet` fallback
+above when the skill genuinely cannot run. **Do not** hand-write a prose "here's
+what's happening today" summary as a substitute: a paragraph of text in this panel
+is the failure mode this rule exists to stop. If you find yourself composing
+sentences for Today instead of invoking `daily-brief`, stop and invoke it. The
+brief's own CSS and JS are already on the page, so the fragment is fully
+interactive the moment it lands.
 
 With the masthead gone, **the painting hero is the document's opening**. Do not
 put anything above it.

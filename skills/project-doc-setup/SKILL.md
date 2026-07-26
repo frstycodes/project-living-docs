@@ -32,7 +32,8 @@ them away.
    `.gitignore`. The config names private channels and the document bakes in
    avatars — none of it may be committed by accident.
 3. **Detect the environment**, and say it out loud. See "Environment" below —
-   it decides whether step 7 can schedule and dry-run, or only writes a spec.
+   it decides where the build and publish happen; step 7's routine handoff is the
+   same either way.
 4. **Interview for sources**, then **draft and sharpen the goal.** Follow
    [`references/interview.md`](references/interview.md) exactly — the source menu
    is discovery-hinted and every inclusion is the user's explicit choice, and the
@@ -54,13 +55,13 @@ them away.
    **Warn about sharing:** the document is private by default, and its inline
    scope (channel ids, Gmail query) travels with it — *sharing the doc shares what
    it watches* (not credentials). Say this plainly.
-7. **Offer to schedule.** Opt-in, calm default cadence, and pick the **notify
+7. **Hand off the schedule.** Opt-in, calm default cadence, and pick the **notify
    channel** (default Slack) — the routine sends the doc's stable URL there, but
-   only on runs that produced a change. The routine carries exactly one pointer,
-   the `artifactUrl`; everything else lives in the Artifact. Follow
-   [`references/scheduling.md`](references/scheduling.md): in Claude Code web,
-   create the cloud routine and run one supervised dry-run against the real
-   environment; run locally, write a ready-to-paste routine spec instead. Never
+   only on runs that produced a change. **Setup does not create the routine.**
+   Claude Code routines draft their own cron from a plain-language prompt, so you
+   hand the user a paste-ready prompt (carrying the one pointer that matters, the
+   `artifactUrl`) plus the clicks to activate it — the same handoff local or in
+   Code web. Follow [`references/scheduling.md`](references/scheduling.md). Never
    strand the user with a built doc and no way forward.
 
 ## Environment
@@ -72,16 +73,13 @@ task is the wrong tool: it cannot reach GitHub the way Code web can, and the
 in-session `CronCreate` scheduler is session-only (7-day expiry, dies with the
 session) — **never use it for this.**
 
-Setup itself, though, runs wherever the user invoked it. Detect which:
-
-- **Claude Code web (cloud):** step 7 can create the routine *and* run the
-  supervised dry-run in the same environment the routine will use. This is the
-  seamless path — interview → build → verify-in-real-env → live.
-- **Local CLI (or anywhere else):** setup still builds the document fully, but it
-  cannot provision or verify a cloud routine from here. Step 7 writes the routine
-  spec to `<repo-root>/.ignored/project-doc/routine.md` and tells the user the
-  one thing to do in Code web. State the environment plainly so the user knows
-  which path they got — never pretend a local run scheduled anything.
+Setup itself runs wherever the user invoked it, and step 7 is the **same either
+way**: it does not create the routine. It hands the user a paste-ready prompt and
+the clicks to stand it up in claude.ai/code, where the routine's own Claude drafts
+the cron and the user just selects the repository. So there is no environment
+branch to detect for scheduling — the doc is built and published locally or in the
+cloud, and the routine is always activated by the user in Code web from the prompt
+you hand them.
 
 ## Done when
 
@@ -90,6 +88,7 @@ git-ignored; every chosen source is either a documented built-in or a
 contract-valid `custom` entry; the goal is written into `#goal` from real source
 evidence, not invented; the first document is built, `check.mjs` exits clean, and
 it is **published as an Artifact** with the URL stored in `#doc-state.artifactUrl`;
-the user has been told sharing the doc shares its scope; and they have either a
-live cloud routine (verified by a supervised dry-run that republished cleanly) or
-a written routine spec plus the one instruction to activate it.
+the user has been told sharing the doc shares its scope; and they have been handed
+the paste-ready routine prompt (with the real `artifactUrl` and notify channel
+filled in) plus the clicks to stand it up in claude.ai/code — never a claim that a
+schedule is live when all setup did was draft its prompt.

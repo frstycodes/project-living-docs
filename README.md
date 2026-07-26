@@ -41,19 +41,22 @@ Then restart / reload so the skills register.
 ## Use
 
 1. In a repo, run `/project-doc-setup` (do the **first run in Claude Code web** —
-   it needs GitHub access and the Artifact tool to publish and to create the cloud
-   routine). Answer the source and goal questions; "decide for me" is offered
-   wherever an answer can be derived.
-2. It builds the first document, publishes a **private** Artifact, and offers an
-   **hourly** cloud routine. The expensive synthesis (Today painting, goal
-   re-evaluation) self-gates to once a day; most hourly runs publish nothing.
+   it needs GitHub access and the Artifact tool to publish). Answer the source and
+   goal questions; "decide for me" is offered wherever an answer can be derived.
+2. It builds the first document, publishes a **private** Artifact, and hands you a
+   **paste-ready prompt** for an **hourly** Claude Code cloud routine — you paste
+   it in claude.ai/code and pick the repo; the routine drafts its own cron. The
+   expensive synthesis (Today painting, goal re-evaluation) self-gates to once a
+   day; most hourly runs publish nothing.
 3. For the standalone brief, run `/daily-brief-setup`.
 
 ## Notes
 
-- **Publishing needs the Artifact tool + GitHub**, which is why setup and the
-  routine belong in Claude Code web, not a cowork/session task. Run locally, setup
-  still builds the doc and writes a routine spec to activate in the web app.
+- **Publishing needs the Artifact tool + GitHub**, which is why the routine belongs
+  in Claude Code web, not a cowork/session task. Setup never creates the routine
+  itself — it builds and publishes the doc, then hands you a paste-ready prompt and
+  the clicks to stand the routine up in claude.ai/code, where its own Claude drafts
+  the cron.
 - **The published Artifact is the single source of truth** — cursors, scope and
   content all live inline in it. Sharing the doc shares its source scope (channel
   ids, Gmail query), not credentials; artifacts are private by default.

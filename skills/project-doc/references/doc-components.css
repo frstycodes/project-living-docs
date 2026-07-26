@@ -248,6 +248,9 @@ a.cite:hover .cite-tip, a.cite:focus-visible .cite-tip { opacity: 1;
   100% { opacity: 1; transform: none; } }
 .cprev-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
 .cprev-id { color: var(--ink-3); font-size: 11px; }
+/* favicon on a generic/custom-source card, in place of the #i-link glyph */
+.cprev-fav { width: 14px; height: 14px; border-radius: 3px; object-fit: cover;
+  display: block; flex: 0 0 auto; }
 .cprev-age { margin-left: auto; font-family: var(--sans); font-size: 10px; font-weight: 500;
   letter-spacing: .08em; text-transform: uppercase; color: var(--ink-4); white-space: nowrap; }
 .cprev-t { margin-top: 9px; font-size: 14px; font-weight: 600; color: var(--ink);

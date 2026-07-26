@@ -930,7 +930,19 @@
         // the fallback for kind "link" and for any unrecognised kind, so a
         // custom source can never render as the wrong card.
         var lsrc = node('span', 'cprev-id');
-        lsrc.appendChild(icon('i-link'));
+        // a custom source's favicon, if it baked one in as a data: URI (an
+        // external URL is never fetched here — CSP would block it anyway), else
+        // the generic link glyph. Data-URI-only keeps it allowlist-free.
+        if (typeof p.favicon === 'string' && p.favicon.slice(0, 5) === 'data:') {
+          var fav = document.createElement('img');
+          fav.className = 'cprev-fav';
+          fav.alt = '';
+          fav.src = p.favicon;
+          fav.addEventListener('error', function () { fav.replaceWith(icon('i-link')); });
+          lsrc.appendChild(fav);
+        } else {
+          lsrc.appendChild(icon('i-link'));
+        }
         lsrc.appendChild(document.createTextNode(p.source || p.host || 'link'));
         top.appendChild(lsrc);
         var lage = p.modified || p.createdAt || p.updatedAt;

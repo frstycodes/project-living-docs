@@ -1,73 +1,68 @@
-# Scheduling the unattended refresh
+# Handing off the unattended refresh
 
 The payoff of the whole setup is a document that stays live without anyone
 re-running it. That means a **Claude Code cloud routine** — created in
 claude.ai/code, where GitHub access exists and a scheduled agent survives
-detached. This step is **opt-in**: ask once, default the cadence to something
-calm, and never force it.
+detached. But **setup does not create the routine.** Claude Code routines accept
+a plain-language prompt and draft the detailed spec — cron included — themselves.
+So the seamless move is to hand the user a ready-to-paste prompt and the few
+clicks to activate it. All they do on the routine side is paste and pick the
+repository.
 
-## What NOT to use
+This is the same handoff everywhere — local CLI or Code web. You cannot reliably
+provision another environment's scheduler from inside a build, and you do not need
+to: the routine's own Claude turns the prompt into a schedule. Don't call
+`schedule`, `CronCreate`, or any `scheduled-tasks`/cowork task — those are the
+wrong tool (session-only, or no GitHub access). Draft the prompt, give the steps,
+stop.
 
-- **`CronCreate`** (the in-session scheduler) is session-only: in-memory, gone
-  when the session ends, auto-expires after 7 days. It cannot run a durable
-  background refresh. Never use it for this.
-- **A cowork / `scheduled-tasks` task** runs in an environment without the GitHub
-  access the refresh needs. Wrong tool.
+## What to hand the user
 
-The only correct target is a Claude Code cloud routine.
+Ask once, calm default: *"Want this to stay live? I'll give you a one-time prompt
+to paste into a Claude Code routine — it refreshes hourly on its own."* Pick the
+**notify channel** (default Slack). If they decline, stop — the document is
+refreshable by hand with `/project-doc-refresh`.
 
-## Ask, then branch on environment
+If they accept, give them exactly two things.
 
-Ask: *"Keep this live? I can refresh it every hour so it's always current."*
-Default cadence **hourly**, at an **off-minute** (e.g. `07 * * * *`), so a fleet of
-these does not all wake on the hour. Hourly is cheap by design: the run does only
-mechanical data patches (auto-checking todos, appending new events) most hours, and
-does the expensive synthesis — the Today painting, the goal re-evaluation — **once
-a day**, self-gated on `#doc-state.lastDaily` (see "Two cadence tiers" in
-[`update-protocol.md`](../project-doc/references/update-protocol.md)). So hourly does
-not churn: most hours publish nothing at all. If the user prefers, offer daily
-instead. If they decline scheduling, stop here — the document is refreshable by hand.
+### 1. The paste-ready routine prompt
 
-If they accept, branch on the environment detected in the skill's step 3:
+Fill in the real `artifactUrl` and notify channel, then hand it over verbatim in a
+fenced block:
 
-### In Claude Code web (cloud)
+```
+Every hour, keep this repo's living project document current.
 
-1. **Create the routine** with the `schedule` skill (cloud routines / scheduled
-   cloud agents). It carries one pointer — the document's `artifactUrl` — and runs
-   `project-doc` (refresh branch), which `WebFetch`es that Artifact, patches it,
-   and republishes. Also carry the notify channel.
-2. **Run one supervised dry-run now.** Trigger a single execution and wait for it.
-   This exercises the *real* environment the routine will use — the cloud env's
-   connector set, `Artifact` and `WebFetch` access — not a local proxy.
-3. **Check what it published.** The dry-run either republished the Artifact
-   cleanly or reported a source unreachable *in the cloud env* (a connector
-   present locally but not in Code web) via its notify. If a source was skipped,
-   surface exactly which and either:
-   - drop it from the config (with the user's ok), or
-   - tell the user how to connect it in the Code web environment,
-   then re-run the dry-run.
-4. **Only go live once the dry-run republished cleanly.** A routine that has never
-   successfully run is not a schedule, it is an 8am surprise.
+Run the project-doc skill's refresh branch:
+- Fetch the published Artifact at <ARTIFACT_URL> and slice its #doc-data.
+- Query each source configured in the doc's #doc-config for activity since its
+  cursor, patch only what changed, auto-check any todos whose PR merged or bead
+  closed, render, validate with check.mjs, and republish to the SAME Artifact URL.
+- The expensive daily synthesis (Today, goal re-evaluation) self-gates on
+  #doc-state.lastDaily — most hours there is nothing to do, and that is correct:
+  publish nothing and post nothing on those runs.
+- On a run that changed something, post the doc's URL to <NOTIFY_CHANNEL>.
+- A source unreachable in this environment is skipped and noted, never a failure.
+```
 
-### Local CLI (or any non-cloud environment)
+Tell them the routine's Claude will turn "every hour" into a concrete cron
+(pick an off-minute so a fleet doesn't all wake on the hour) — they don't write
+one. Hourly is cheap by design; if they'd rather, they can just say "every
+morning" in the prompt instead.
 
-You cannot provision or verify a cloud routine from here. Do not pretend to.
+### 2. The clicks
 
-1. **Build and publish are already done** — the document exists at its
-   `artifactUrl`.
-2. **Write the routine spec** to `<repo-root>/.ignored/project-doc/routine.md`:
-   the cron expression, the `artifactUrl` the routine will refresh, the notify
-   channel, and the exact sources this project uses (so the user can confirm they
-   are connected in Code web).
-3. **Tell the user the one thing to do:** open claude.ai/code and create a
-   scheduled routine from `routine.md` — and that its first run there will
-   self-verify, skipping and flagging (via notify) any source the cloud
-   environment cannot reach.
+1. Open **claude.ai/code**.
+2. Start a new **routine** (scheduled agent).
+3. Paste the prompt above.
+4. **Select this repository** so the routine runs with its GitHub access and
+   connectors.
+5. Save. Its first run self-verifies against the real cloud environment —
+   skipping and flagging (via notify) any source that environment can't reach.
 
 ## The line that matters
 
-A scheduled refresh that has never run successfully in its real environment is
-not "set up" — it is a hope. The supervised dry-run is what turns "should work at
-8am" into "confirmed working, now detached." When you cannot run it (local),
-say so plainly and hand off the exact next step; never report a schedule that was
-never verified.
+A routine that has never run successfully in its real environment is not "set up"
+— it is a hope, and its first live run is what proves it. You are handing the user
+a prompt that makes that run happen; say so plainly, and never report a schedule
+as active when all you did was draft its prompt.

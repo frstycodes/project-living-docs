@@ -113,22 +113,35 @@ Identical pattern to `project-doc-setup` — the same rules, for the same reason
   detached.
 - **Never** use `CronCreate` (session-only, 7-day expiry, dies with the session)
   or a cowork/`scheduled-tasks` task (wrong environment).
-- Opt-in. Default cadence calm (daily) and off-minute.
+- **Setup does not create the routine.** Claude Code routines draft their own cron
+  from a plain-language prompt, so you hand the user a paste-ready prompt and the
+  clicks to activate it. Opt-in, default cadence calm (every morning).
 
-Branch on where setup is running:
+Hand the user two things — the same handoff local or in Code web:
 
-- **Claude Code web:** create the routine (it carries the config + `artifactUrl`,
-  runs `daily-brief`, republishes the Artifact, and sends the link to `notify`),
-  then trigger **one supervised dry-run now** and confirm it republished a
-  complete brief. Because the brief is a snapshot, "verify" is simpler than
-  project-doc's — just: did it produce a full document, and did any source come
-  back empty because it is unreachable *in the cloud env* rather than genuinely
-  quiet? Surface any unreachable source
-  and let the user connect it, before going live.
-- **Local CLI:** build the brief, then write a ready-to-paste routine spec to
-  `~/.claude/daily-brief/routine.md` and tell the user the one thing to do in
-  Code web. Never report a schedule that was never created. State the environment
-  plainly.
+1. **The paste-ready routine prompt**, with the real `out`/`artifactUrl` and notify
+   channel filled in:
+
+   ```
+   Every morning, rebuild my standalone daily brief.
+
+   Invoke the daily-brief skill with scope: all and the config below. It is a
+   stateless snapshot — rebuild the whole brief for today from Slack, Gmail,
+   Calendar, GitHub and Drive, republish to the SAME Artifact URL <ARTIFACT_URL>,
+   and post the link to <NOTIFY_CHANNEL> every run (a morning brief always
+   notifies). A source that is down produces a thinner brief with the gap noted,
+   never a failed run.
+
+   Config: <paste the config.json contents>
+   ```
+
+   Tell them the routine's Claude turns "every morning" into an off-minute cron
+   (e.g. `07:07`) — they don't write one.
+
+2. **The clicks:** open claude.ai/code → new routine → paste the prompt → save.
+   Its first run self-verifies against the real cloud environment, flagging any
+   source that environment can't reach. Never report a schedule as live when all
+   you did was draft its prompt.
 
 ## Hard don'ts
 
@@ -140,6 +153,7 @@ and schedules; the builder builds.
 
 `~/.claude/daily-brief/config.json` exists and parses; the first brief is built
 at `out` as a complete standalone document and **published as an Artifact** with
-its URL stored as `artifactUrl`; and the user has either a live cloud routine
-(confirmed by a dry-run that republished a full brief and sent its link) or a
-written routine spec plus the one instruction to activate it.
+its URL stored as `artifactUrl`; and the user has been handed the paste-ready
+routine prompt (with real `artifactUrl`, config and notify channel filled in) plus
+the clicks to stand it up in claude.ai/code — never a claim that a schedule is live
+when all setup did was draft its prompt.

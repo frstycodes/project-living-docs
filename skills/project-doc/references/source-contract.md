@@ -50,11 +50,30 @@ unstructured feed — still belongs in the document. It registers with just:
 | `cursor` | as above — even a generic feed has a "newest seen" marker; without one it re-reports everything every run |
 | `citationKind: "link"` | renders the `#i-link` chip. Linked if the URL's host is allowlisted, an unlinked `<span>` otherwise. |
 
-A `link`-kind citation with a `preview` gets a **generic card**: the source name
-on the band, whatever `title` it has, an optional `author` and `age`. No
-fabricated fields, no fetch. A `link` citation with no preview is just the chip.
-This is the floor, and it needs **no locked-file change** — the code already
-renders it.
+A `link`-kind citation gets a **generic card**: the source name on the band,
+whatever `title` it has, an optional `author` and `age`, and — if the source
+supplies one — its **favicon**. No fabricated fields, no fetch.
+
+```json
+"preview": {
+  "source": "Linear", "title": "Audit trail is append-only", "author": "sandesh",
+  "modified": "2026-07-21T11:20:00Z",
+  "favicon": "data:image/png;base64,iVBORw0KGgo…"
+}
+```
+
+- `favicon` must be a **`data:` URI** — a favicon fetched once at build time and
+  inlined, exactly like the avatar rule. An external URL is ignored (CSP blocks it
+  in the Artifact anyway), and a missing or broken favicon falls back to the
+  generic link glyph, which is a designed state. Grab it from the source's origin
+  (`/favicon.ico` or the page's `<link rel="icon">`), downscale to ~16px, base64
+  it. Roughly 1–2 KB. It is what makes a custom source's card feel like *that*
+  service instead of a nameless link.
+- **A custom source should register a preview, not just a bare chip.** The richness
+  floor in [`sections.md`](sections.md) applies to custom sources exactly as it
+  does to built-ins: a chip you resolved but left without a payload is a bare link
+  where a card was available. A `link` citation with genuinely nothing to preview
+  is just the chip — the floor, needing **no locked-file change**.
 
 ---
 

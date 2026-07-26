@@ -51,14 +51,17 @@ local — that is the environment the routine will use.
 - [ ] `#doc-data`, `#doc-state`, `#doc-config`, `#doc-allowlist`, `#doc-previews` all present and parse
 - [ ] A source-fetched string containing `<` `&` `"` renders escaped, not as markup (pick a message with a bracket)
 - [ ] A custom / unknown source renders as the generic `#i-link` chip + generic card, not a broken card
+- [ ] A custom source with a baked `favicon` (`data:` URI) shows it on the generic card in place of the `#i-link` glyph
+- [ ] **Today is the interactive `daily-brief` fragment** (painting, item rows, hover detail) — not a hand-written prose summary
+- [ ] **Richness floor**: the large majority of citation chips carry a `data-cite` payload (not bare links); items with real depth carry a disclosure holding it verbatim
 
 ## 5. Cloud routine (the risky part — this is why we test live)
 
 - [ ] `Artifact` and `WebFetch` are actually available in the cloud routine (not just locally)
 - [ ] Routine created as a **Claude Code cloud routine** (not `CronCreate`, not a cowork task)
 - [ ] Routine carries only the `artifactUrl` pointer + notify channel
-- [ ] **Supervised dry-run**: trigger one run now, wait, confirm it **republished to the same URL** (URL unchanged)
-- [ ] Dry-run reached GitHub (the connector cowork lacks) — no "couldn't reach GitHub" in the notify
+- [ ] **First run**: after pasting the setup prompt and picking the repo, trigger one run now, wait, confirm it **republished to the same URL** (URL unchanged)
+- [ ] First run reached GitHub (the connector cowork lacks) — no "couldn't reach GitHub" in the notify
 - [ ] Any source unreachable *in the cloud env* is surfaced by name before going live
 
 ## 6. Refresh behaviours
