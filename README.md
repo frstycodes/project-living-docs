@@ -80,6 +80,18 @@ publish it as a private Artifact, and hand me a paste-ready prompt to rebuild it
 each morning.
 ```
 
+**If `curl` to raw GitHub is blocked**, clone once and follow the files on disk —
+swap the `curl` line for this and point at the same SKILL.md under the clone:
+
+```
+git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
+```
+
+e.g. *"Read `/tmp/pld/skills/project-doc-setup/SKILL.md` and follow it exactly —
+every referenced file (references/…, ../project-doc/…, the locked .mjs) is in that
+clone; run the .mjs with node."* Same for `daily-brief-setup` and for the routine
+prompt (`skills/project-doc/SKILL.md`, refresh branch).
+
 Setup answers the source and goal questions (with "decide for me" wherever an
 answer can be derived), builds the first document, publishes a **private**
 Artifact, and hands you a **paste-ready routine prompt**. That routine prompt
