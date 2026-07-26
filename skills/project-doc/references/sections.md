@@ -312,6 +312,23 @@ beside `config.json` by the citation-resolution pass:
 If `citations.json` does not exist, every chip is a `<span>` and the document is
 still correct — it is simply unlinked. **Never block a run on that file.**
 
+## Resolve fully — a title-only card is a defect the gate rejects
+
+When you resolve a citation, pull the item's **whole** payload, not just enough to
+label a chip. A PR resolved to `{title, state}` renders a card that says author
+"unknown" with no diff and no files — the exact breakage `check.mjs` now fails the
+build on. Fetch every field the card shows, in the same call that resolves the URL:
+
+- **PR / commit** — `gh pr view <n> --json title,state,author,additions,deletions,changedFiles,createdAt,mergedAt,closedAt,headRefName` (or the GitHub API). `author`, `additions`, `deletions` and `changedFiles` are **required** — a PR always has them, and the gate errors if they are missing. Then download the author's avatar (`author.avatarUrl` / `https://github.com/<login>.png`) and inline it as a `data:` URI in `authorAvatarUrl`.
+- **Slack** — keep the **verbatim** message `text`, the `author`, the `ts`, the `channel`, and the author's avatar. Slack's API often returns no avatar URL, so fetch the face once at build and inline it as a `data:` URI; a monogram is the fallback, not the target.
+- **Drive** — `title, mimeType, modified, owner` and the owner's avatar inlined.
+- **Bead / calendar** — every field in the kind's row of the table above.
+
+The rule: **fetch the face and the numbers once, at resolve time, and inline
+them.** You already made the call that resolved the link — carry back everything it
+returned. "I have the title" is where the last run stopped, and it is why avatars
+were monograms and PR cards read "unknown".
+
 ## The preview payload
 
 Every preview used anywhere in the document is baked into **one** JSON block,

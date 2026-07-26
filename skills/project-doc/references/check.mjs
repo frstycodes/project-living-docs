@@ -208,6 +208,27 @@ for (const [k, v] of Object.entries(previews)) {
   if (kind && !KINDS.has(kind)) warn(`#doc-previews key "${k}" has unknown kind "${kind}" — it will fall back to the generic link card`);
 }
 
+// {PREVIEW QUALITY} — a card resolved to only a title is a half-built card. These
+// are the exact defects a real run shipped: PR cards showing author "unknown" with
+// no diff, and every avatar falling back to a monogram because no face was fetched.
+// A PR always has an author and a diff; their absence means the resolve pass
+// stopped at title+state instead of pulling the item's real metadata.
+for (const [k, v] of Object.entries(previews)) {
+  const p = (v && v.preview) || {};
+  const kind = v && v.kind;
+  if (kind === 'pr') {
+    const miss = ['author', 'additions', 'deletions', 'changedFiles'].filter((f) => p[f] == null);
+    if (miss.length)
+      err(`PR preview "${k}" is missing ${miss.join(', ')} — the card shows author "unknown" and no diff/files. Fetch them when you resolve the PR (gh pr view <n> --json author,additions,deletions,changedFiles,…) instead of stopping at title+state`);
+    if (p.authorAvatarUrl == null)
+      warn(`PR preview "${k}" has no authorAvatarUrl — the card falls back to a monogram; download the author's avatar and inline it as a data: URI`);
+  }
+  if (kind === 'slack' && p.authorAvatarUrl == null)
+    warn(`Slack preview "${k}" has no authorAvatarUrl — the face falls back to a monogram; fetch it once and inline it as a data: URI`);
+  if (kind === 'drive' && p.ownerAvatarUrl == null)
+    warn(`Drive preview "${k}" has no ownerAvatarUrl — inline the owner's face as a data: URI or it shows a monogram`);
+}
+
 // {REPORT}
 for (const w of warns) console.log(`⚠ ${w}`);
 for (const e of errors) console.log(`✗ ${e}`);
