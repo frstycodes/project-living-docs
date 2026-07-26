@@ -280,9 +280,11 @@ you did not publish), notify the failure, exit non-zero. This is the integrity-f
 rollback is simply *not republishing*.
 
 When clean, **publish** per [`publishing.md`](publishing.md): republish to the existing
-`artifactUrl` (updating it in place), then notify only if this run produced a changelog entry.
-If a human is present, confirm what changed and the doc's URL; unattended, the notify is the
-report.
+`artifactUrl` (updating it in place). Notify is **off by default and only ever the
+user's own DM** — never a project channel (see [`publishing.md`](publishing.md)); when
+enabled, DM only if this run produced a changelog entry. If a human is present, confirm what
+changed and the doc's URL; unattended with notify enabled, the DM is the report; unattended
+with notify off, the silent republish is.
 
 ---
 

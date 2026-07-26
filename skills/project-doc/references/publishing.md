@@ -72,15 +72,22 @@ because the publish step flaked:
 
 ## Notify
 
-The notify channel is chosen at setup and travels with the routine (Slack by
-default; email if the user picked it). The link sent is always the stable
+**The refresh never posts to a project channel.** The document bakes in private
+scope and a channel post drops it in front of the whole team unasked. Notify is
+**off by default**; if the user wants a ping, it goes to **their own DM only** —
+never a shared or project channel. The link sent is always the stable
 `artifactUrl`.
 
-- **The project doc notifies only on a real change** — a run that produced a
-  changelog entry. A no-change run publishes nothing and says nothing; a daily
-  "nothing happened" ping trains the user to ignore the doc.
-- **The daily brief notifies every run** — it is a morning nudge, that is its job.
-- A **publish failure** notifies regardless, on either deliverable.
+- **Default: no notify.** A refresh publishes silently to the same URL the user
+  bookmarked; they open it when they want. Offer a DM ping at setup; if declined,
+  the routine notifies nothing.
+- **A DM ping fires only on a real change** — a run that produced a changelog
+  entry. A no-change run publishes nothing and says nothing; a daily "nothing
+  happened" ping trains the user to ignore the doc.
+- **The daily brief notifies every run** — it is a morning nudge to the user's own
+  DM, that is its job.
+- A **publish failure** notifies the user's DM regardless, on either deliverable —
+  a broken build is worth interrupting for; a channel post still is not.
 
 ## The archive is its own Artifact
 

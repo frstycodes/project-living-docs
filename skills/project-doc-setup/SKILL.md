@@ -55,9 +55,11 @@ them away.
    **Warn about sharing:** the document is private by default, and its inline
    scope (channel ids, Gmail query) travels with it — *sharing the doc shares what
    it watches* (not credentials). Say this plainly.
-7. **Hand off the schedule.** Opt-in, calm default cadence, and pick the **notify
-   channel** (default Slack) — the routine sends the doc's stable URL there, but
-   only on runs that produced a change. **Setup does not create the routine.**
+7. **Hand off the schedule.** Opt-in, calm default cadence. **Notify is off by
+   default and never a project channel** — a refresh publishes silently to the
+   same bookmarked URL. If the user wants a ping, offer their **own DM only** (the
+   doc bakes in private scope; a channel post exposes it to the whole team unasked)
+   and only on runs that produced a change. **Setup does not create the routine.**
    Claude Code routines draft their own cron from a plain-language prompt, so you
    hand the user a paste-ready prompt (carrying the one pointer that matters, the
    `artifactUrl`) plus the clicks to activate it — the same handoff local or in

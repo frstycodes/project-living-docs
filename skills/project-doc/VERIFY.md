@@ -59,7 +59,7 @@ local — that is the environment the routine will use.
 
 - [ ] `Artifact` and `WebFetch` are actually available in the cloud routine (not just locally)
 - [ ] Routine created as a **Claude Code cloud routine** (not `CronCreate`, not a cowork task)
-- [ ] Routine carries only the `artifactUrl` pointer + notify channel
+- [ ] Routine carries only the `artifactUrl` pointer (+ DM target if notify was enabled) — **never a project-channel notify**
 - [ ] **First run**: after pasting the setup prompt and picking the repo, trigger one run now, wait, confirm it **republished to the same URL** (URL unchanged)
 - [ ] First run reached GitHub (the connector cowork lacks) — no "couldn't reach GitHub" in the notify
 - [ ] Any source unreachable *in the cloud env* is surfaced by name before going live
@@ -67,7 +67,7 @@ local — that is the environment the routine will use.
 ## 6. Refresh behaviours
 
 - [ ] Run fetches **programmatically** (`curl` + `doc-slice.mjs`) — the rendered markup never enters model context (matters most at 15-min/5-min cadence)
-- [ ] Run with nothing new → **publishes nothing**, no changelog entry, notify silent (doc only notifies on change); cost is only curl + slice + source queries
+- [ ] Run with nothing new → **publishes nothing**, no changelog entry, no ping (notify off by default; when on, DM-only and change-only); cost is only curl + slice + source queries
 - [ ] Run with real activity → exactly one new `.wn-run` marked latest; `new` flags moved to touched items only
 - [ ] A patch is a **data** edit: confirm the diff touched `#doc-data`, not hand-edited HTML
 - [ ] Cursor advanced **only** for sources that succeeded this run

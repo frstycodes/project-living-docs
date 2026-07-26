@@ -119,24 +119,29 @@ Identical pattern to `project-doc-setup` — the same rules, for the same reason
 
 Hand the user two things — the same handoff local or in Code web:
 
-1. **The paste-ready routine prompt**, with the real `out`/`artifactUrl` and notify
-   channel filled in:
+1. **The paste-ready routine prompt.** A cloud routine has **no local skills
+   access**, so the prompt installs the plugin from GitHub first, then runs its
+   command — it does not "invoke the daily-brief skill". Fill in the real
+   `artifactUrl` and config:
 
    ```
-   Every morning, rebuild my standalone daily brief.
+   First, install the living-docs plugin from GitHub:
+     /plugin marketplace add frstycodes/project-living-docs
+     /plugin install project-living-docs@project-living-docs
 
-   Invoke the daily-brief skill with scope: all and the config below. It is a
-   stateless snapshot — rebuild the whole brief for today from Slack, Gmail,
-   Calendar, GitHub and Drive, republish to the SAME Artifact URL <ARTIFACT_URL>,
-   and post the link to <NOTIFY_CHANNEL> every run (a morning brief always
-   notifies). A source that is down produces a thinner brief with the gap noted,
-   never a failed run.
+   Then, every morning, rebuild my standalone daily brief by running
+   /daily-brief with scope: all and the config below. It is a stateless snapshot —
+   rebuild the whole brief for today from Slack, Gmail, Calendar, GitHub and Drive,
+   republish to the SAME Artifact URL <ARTIFACT_URL>, and DM me the link every run
+   (a morning brief always notifies — my own DM, never a shared channel). A source
+   that is down produces a thinner brief with the gap noted, never a failed run.
 
    Config: <paste the config.json contents>
    ```
 
-   Tell them the routine's Claude turns "every morning" into an off-minute cron
-   (e.g. `07:07`) — they don't write one.
+   Use the real GitHub slug — `frstycodes/project-living-docs`. Tell them the
+   routine's Claude turns "every morning" into an off-minute cron (e.g. `07:07`) —
+   they don't write one.
 
 2. **The clicks:** open claude.ai/code → new routine → paste the prompt → save.
    Its first run self-verifies against the real cloud environment, flagging any

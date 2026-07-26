@@ -40,15 +40,43 @@ Then restart / reload so the skills register.
 
 ## Use
 
-1. In a repo, run `/project-doc-setup` (do the **first run in Claude Code web** —
-   it needs GitHub access and the Artifact tool to publish). Answer the source and
-   goal questions; "decide for me" is offered wherever an answer can be derived.
-2. It builds the first document, publishes a **private** Artifact, and hands you a
-   **paste-ready prompt** for an **hourly** Claude Code cloud routine — you paste
-   it in claude.ai/code and pick the repo; the routine drafts its own cron. The
-   expensive synthesis (Today painting, goal re-evaluation) self-gates to once a
-   day; most hourly runs publish nothing.
-3. For the standalone brief, run `/daily-brief-setup`.
+Do the **first run in Claude Code web** — it needs GitHub access and the Artifact
+tool to publish. The web app has **no local skills**, so you don't `/plugin install`
+ahead of time; instead paste one of the setup prompts below, which install the
+plugin from GitHub and then run the setup. Pick the repo when prompted.
+
+**Set up a project's living document** — paste in a Claude Code web session opened
+on the repo:
+
+```
+/plugin marketplace add frstycodes/project-living-docs
+/plugin install project-living-docs@project-living-docs
+
+Now run /project-doc-setup for this repository: interview me for sources and the
+goal, build the first living document, publish it as a private Artifact, and hand
+me a paste-ready prompt to schedule an hourly refresh routine.
+```
+
+**Set up the standalone daily brief** — paste in any Claude Code web session:
+
+```
+/plugin marketplace add frstycodes/project-living-docs
+/plugin install project-living-docs@project-living-docs
+
+Now run /daily-brief-setup: ask what my standalone daily brief covers and where it
+goes, build the first one, publish it as a private Artifact, and hand me a
+paste-ready prompt to rebuild it each morning.
+```
+
+Setup answers the source and goal questions (with "decide for me" wherever an
+answer can be derived), builds the first document, publishes a **private**
+Artifact, and hands you a **paste-ready routine prompt**. That routine prompt
+also installs the plugin from GitHub, then refreshes on a schedule — you paste it
+into a new claude.ai/code routine and pick the repo; the routine drafts its own
+cron. The expensive synthesis (Today painting, goal re-evaluation) self-gates to
+once a day, so most hourly runs publish nothing. **The refresh never posts to a
+project channel** — it publishes silently to the same bookmarked URL, with an
+optional DM ping only if you ask for one.
 
 ## Notes
 

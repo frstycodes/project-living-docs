@@ -19,36 +19,44 @@ stop.
 ## What to hand the user
 
 Ask once, calm default: *"Want this to stay live? I'll give you a one-time prompt
-to paste into a Claude Code routine — it refreshes hourly on its own."* Pick the
-**notify channel** (default Slack). If they decline, stop — the document is
+to paste into a Claude Code routine — it refreshes hourly on its own."* Then ask
+whether they want a **DM ping** when something changes — **off by default, and
+never a project channel** (the doc bakes in private scope; a channel post exposes
+it to the whole team). If they decline scheduling, stop — the document is
 refreshable by hand with `/project-doc-refresh`.
 
 If they accept, give them exactly two things.
 
 ### 1. The paste-ready routine prompt
 
-Fill in the real `artifactUrl` and notify channel, then hand it over verbatim in a
-fenced block:
+A cloud routine has **no local skills access**, so the prompt installs the plugin
+from GitHub first, then runs its refresh command — it does not "invoke the
+project-doc skill". Fill in the real `artifactUrl` (and drop or keep the DM line
+per the user's choice), then hand it over verbatim in a fenced block:
 
 ```
-Every hour, keep this repo's living project document current.
+First, install the living-docs plugin from GitHub:
+  /plugin marketplace add frstycodes/project-living-docs
+  /plugin install project-living-docs@project-living-docs
 
-Run the project-doc skill's refresh branch:
+Then, every hour, keep this repo's living project document current by running
+/project-doc-refresh:
 - Fetch the published Artifact at <ARTIFACT_URL> and slice its #doc-data.
 - Query each source configured in the doc's #doc-config for activity since its
   cursor, patch only what changed, auto-check any todos whose PR merged or bead
   closed, render, validate with check.mjs, and republish to the SAME Artifact URL.
 - The expensive daily synthesis (Today, goal re-evaluation) self-gates on
   #doc-state.lastDaily — most hours there is nothing to do, and that is correct:
-  publish nothing and post nothing on those runs.
-- On a run that changed something, post the doc's URL to <NOTIFY_CHANNEL>.
+  publish nothing on those runs.
+- Notify: publish silently. On a run that changed something, DM me the doc's URL —
+  never post to a project or shared channel. (Omit this line for no ping at all.)
 - A source unreachable in this environment is skipped and noted, never a failure.
 ```
 
-Tell them the routine's Claude will turn "every hour" into a concrete cron
-(pick an off-minute so a fleet doesn't all wake on the hour) — they don't write
-one. Hourly is cheap by design; if they'd rather, they can just say "every
-morning" in the prompt instead.
+Use the real GitHub slug — `frstycodes/project-living-docs`. Tell them the
+routine's Claude turns "every hour" into a concrete cron (an off-minute, so a
+fleet doesn't all wake on the hour) — they don't write one. Hourly is cheap by
+design; if they'd rather, they can just say "every morning" in the prompt instead.
 
 ### 2. The clicks
 

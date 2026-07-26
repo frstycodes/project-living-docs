@@ -24,7 +24,7 @@ opinion, their identity, their consent, something the evidence cannot reveal:
 |---|---|
 | Gmail query / labels (derive from domain + project) | **Which sources to include** — consent to watch a private channel is theirs |
 | Slack channel *scope* once a source is in | **The `you` block** — their name, role, assignee id |
-| Drive folders, calendar match, Pact project key | **Where notifications go** — the notify channel/target |
+| Drive folders, calendar match, Pact project key | **Whether to notify at all** — off by default; a ping goes to their **own DM only**, never a project channel |
 | The **goal** (draft from sources) | Anything they state as an explicit preference |
 | The Gantt window unit/columns | |
 | Cadence (default daily, off-minute) | |
