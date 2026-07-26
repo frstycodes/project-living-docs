@@ -116,12 +116,25 @@ The floors, non-negotiable:
    preview payload"). A bead keeps its status and assignee. Summarising these into
    the doc's own voice and discarding the originals is loss, not editing.
 
-4. **Completeness over curation in the recorded sections.** What's New, Timeline
-   and Current State record *what happened* — every decision, pivot, incident,
-   milestone and shipped item the sources show, each cited, not a hand-picked
-   highlight reel. Curation is the visible line's job (one line each); the record
-   is the disclosure's and the preview's. Ten timeline events where the sources
-   support fifty is a summary wearing this document's chrome.
+4. **Completeness over curation in the recorded sections.** What's New, Timeline,
+   the Timeline's decisions and Current State record *what happened* — **every**
+   decision, pivot, incident, milestone and shipped item the sources show, each
+   cited, not a hand-picked highlight reel. Same for the Glossary (every term the
+   team actually uses) and the goal's decision shifts. Curation is the visible
+   line's job (one line each); the record is the disclosure's and the preview's.
+
+   **Read the sources to exhaustion, do not sample.** This is the failure that
+   loses the most: a mature project has *dozens* of timeline events and decisions,
+   not ten. Page every source all the way back to its cursor floor — the whole
+   Slack history for each channel, every PR and issue, every bead, the full commit
+   log — and record each qualifying item. A run that stops after the first page,
+   or keeps "the important ones", produces a doc that is 3–10× thinner than the
+   sources: ten timeline events where the sources hold fifty, seven decisions where
+   there are sixty, twenty glossary terms where the team uses eighty. That is the
+   single biggest data loss this document can suffer, and it is invisible in the
+   rendered page — it just looks tidy. `check.mjs` warns when folded depth is thin
+   for the item count, but it cannot see the events you never read; only reading to
+   the floor prevents it.
 
 The self-check before publishing: **would a reader who opened every disclosure and
 hovered every chip learn as much as a reader of the raw sources would?** If the

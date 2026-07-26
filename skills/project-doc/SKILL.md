@@ -24,10 +24,13 @@ in full, and a build that skips them is thin and broken even though it "renders"
    `preview` payload, baked into `#doc-previews` (fill it from the data you already
    read to resolve the citation — no second fetch). An empty `#doc-previews` beside
    a page full of `.cite` chips means every hover card is dead.
-3. **Depth is folded, not cut.** Two altitudes per item — a one-line visible
-   surface and a `<details>` disclosure holding the full prose verbatim — and the
-   recorded sections carry *what happened*, not a highlight reel. See "The richness
-   floor" in `sections.md`.
+3. **Depth is folded, not cut — and the sources are read to exhaustion.** Two
+   altitudes per item (a one-line surface plus a `<details>` holding the full prose
+   verbatim), **and** the recorded sections carry *every* qualifying item, not a
+   highlight reel. Page each source all the way back to its cursor floor: a mature
+   project has dozens of timeline events, dozens of decisions, dozens of glossary
+   terms — recording ten of fifty is the biggest, most invisible data loss this
+   doc can suffer. See "The richness floor" in `sections.md`.
 4. **The publish gate blesses the file before you publish.** Run
    `node references/publish-gate.mjs <path>` on the built file. It runs `check.mjs`
    (a text Today, dead hovers, thin previews and every structural invariant) and

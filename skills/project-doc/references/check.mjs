@@ -190,6 +190,17 @@ if (todayM) {
     err('#panel-today has no daily-brief fragment (no painting, to-dos or schedule) and no .callout.quiet fallback — Today is a hand-written text stand-in; invoke the daily-brief skill for it');
 }
 
+// {FOLDED DEPTH} — the two-altitude rule at scale. A real project accumulates
+// depth: the reference document folds ~1 disclosure per recorded item. A run that
+// records items but gives almost none of them a <details> has cut the depth it was
+// supposed to fold (observed: 22 disclosures for ~66 items, vs 217 for ~180). Can't
+// know the sources' true size, so this is a WARN on the ratio, not the count.
+const recordedItems = count(/class="t-title"/g) + count(/class="item"/g)
+  + count(/class="ask-t"/g) + count(/class="wn-x"/g);
+const disclosures = count(/<details class="disc/g);
+if (recordedItems >= 20 && disclosures / recordedItems < 0.35)
+  warn(`only ${disclosures} disclosures for ~${recordedItems} recorded items — folded depth looks thin (the reference folds roughly one <details> per item). Are you cutting the full prose instead of folding it, or recording only a fraction of what the sources hold?`);
+
 // {PREVIEW COVERAGE} — against the rendered HTML (previews built once, above)
 const cited = new Set([...html.matchAll(/data-cite="([^"]+)"/g)].map((m) => m[1]));
 for (const k of cited) if (!(k in previews)) err(`chip data-cite="${k}" has no #doc-previews entry — a dead hover`);
