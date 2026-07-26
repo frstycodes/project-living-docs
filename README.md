@@ -41,45 +41,48 @@ Then restart / reload so the skills register.
 ## Use
 
 Do the **first run in Claude Code web** — it needs GitHub access and the Artifact
-tool to publish. The web app has **no local skills and no `/plugin`**, so you don't
-install anything: the setup prompt tells the agent to **`curl` the skill straight
-from GitHub and follow it**. Pick the repo when prompted.
+tool to publish. The web app has **no local skills and no `/plugin`**, so the setup
+prompt tells the agent to fetch the skill from GitHub and follow it. Pick the repo
+when prompted.
 
-The skills live under one raw base:
-
-```
-https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/
-```
-
-The prompt only points the agent at a skill and how to reach its sibling files —
-the SKILL.md carries the interview, build, publish and routine-handoff steps
-itself, so you don't restate them.
+**Clone, don't curl.** A SKILL.md links to sibling reference files (`sections.md`,
+`publishing.md`, the locked `.mjs`) with relative paths; those files carry
+load-bearing rules — the citation-preview payloads, the Today painting, the
+richness floor, and `check.mjs` (which refuses to let a broken build publish).
+`curl`-ing only the one SKILL.md drops all of that and yields a thin, preview-less
+doc with a text Today. **Clone the repo so every file is on disk and the links
+resolve.**
 
 **Set up a project's living document** — paste in a Claude Code web session opened
 on the repo:
 
 ```
-Fetch this skill and follow it exactly:
-  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc-setup/SKILL.md
-It references sibling files with relative paths — resolve each against the same
-base (…/main/skills/…) and run any .mjs with node.
+Clone this skill and follow it exactly:
+  git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
+Read /tmp/pld/skills/project-doc-setup/SKILL.md and follow it — including every
+reference file it links (references/…, ../project-doc/…). Run the locked .mjs
+(doc-render.mjs, check.mjs, doc-slice.mjs) with node, and do NOT publish unless
+`node check.mjs` on the built file exits clean.
 ```
 
 **Set up the standalone daily brief** — same, one path change:
 
 ```
-Fetch this skill and follow it exactly:
-  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/daily-brief-setup/SKILL.md
-Resolve referenced files against the same base (…/main/skills/…), run any .mjs with node.
-```
-
-**If `curl` to raw GitHub is blocked**, clone once and point at the file on disk:
-
-```
-Clone the skill repo and follow it exactly:
+Clone this skill and follow it exactly:
   git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
-Read /tmp/pld/skills/project-doc-setup/SKILL.md — referenced files and the .mjs are
-in the clone; run .mjs with node.
+Read /tmp/pld/skills/daily-brief-setup/SKILL.md and follow it, including every file
+it references. Run any .mjs with node.
+```
+
+**Only if `git clone` is unavailable**, fall back to curl — but then you MUST tell
+the agent to also fetch each referenced file, or the build will be thin:
+
+```
+Fetch this skill AND its reference files and follow it exactly:
+  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc-setup/SKILL.md
+Every file it links (references/…, ../project-doc/…, the .mjs) lives under
+…/main/skills/… — curl each one the skill tells you to read; run .mjs with node;
+do not publish unless check.mjs exits clean.
 ```
 
 Setup answers the source and goal questions (with "decide for me" wherever an

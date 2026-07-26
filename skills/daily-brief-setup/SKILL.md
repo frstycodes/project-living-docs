@@ -120,18 +120,19 @@ Identical pattern to `project-doc-setup` — the same rules, for the same reason
 Hand the user two things — the same handoff local or in Code web:
 
 1. **The paste-ready routine prompt.** A cloud routine has **no local skills and no
-   `/plugin`**, so the prompt tells the agent to `curl` the brief skill from GitHub
-   and follow it. The SKILL.md carries the build; the prompt states only what it
-   can't — `scope: all`, the config, the Artifact URL, and the DM:
+   `/plugin`**, so the prompt tells the agent to **clone** the skill repo from
+   GitHub and follow it — clone, not curl, so its reference files come with it. The
+   SKILL.md carries the build; the prompt states only what it can't — `scope: all`,
+   the config, the Artifact URL, and the DM:
 
    ```
-   Every morning, rebuild my standalone daily brief. Fetch this skill and follow
-   it exactly:
-     curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/daily-brief/SKILL.md
-   Resolve referenced files against the same base (…/main/skills/daily-brief/…),
-   run any .mjs with node. Build with scope: all and the config below, republish to
-   the SAME Artifact URL <ARTIFACT_URL>, and DM me the link every run (my own DM,
-   never a shared channel).
+   Every morning, rebuild my standalone daily brief. Clone the skill and follow it
+   exactly:
+     git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
+   Read /tmp/pld/skills/daily-brief/SKILL.md and follow it, including every file it
+   references; run any .mjs with node. Build with scope: all and the config below,
+   republish to the SAME Artifact URL <ARTIFACT_URL>, and DM me the link every run
+   (my own DM, never a shared channel).
 
    Config: <paste the config.json contents>
    ```

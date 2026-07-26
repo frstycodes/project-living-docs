@@ -7,6 +7,32 @@ A **living document** is one HTML file per project that a returning teammate rea
 
 **The published Artifact is the state.** There is no database and no sidecar file. Everything a run needs to continue is baked *inside* the document as `<script type="application/json">` blocks: cursors and `artifactUrl` in `#doc-state`, scope + config in `#doc-config`, the link allowlist in `#doc-allowlist`, the citation previews in `#doc-previews`. A refresh `WebFetch`es the Artifact, patches it, validates, and republishes to the same URL — so it works unchanged in a Claude Code cloud routine, where the repo is cloned fresh every run and nothing on disk survives. See [`references/publishing.md`](references/publishing.md) for the hosting mechanics and [`references/config.md`](references/config.md) for the inline blocks.
 
+## Four things a build must have, or it does not ship
+
+These are the failure modes real runs produce when the reference files aren't
+followed. **You must read [`references/sections.md`](references/sections.md)
+(the disclosure rule, the richness floor, the Today rule, the preview payload) and
+[`references/publishing.md`](references/publishing.md) — the rules below live there
+in full, and a build that skips them is thin and broken even though it "renders".**
+
+1. **Today is the real `daily-brief` fragment, never prose.** Invoke the
+   `daily-brief` skill with `scope: project` and drop its markup fragment into
+   `#panel-today`. A hand-written "here's what's happening today" paragraph is a
+   failed build. The only other allowed value is a `.callout.quiet` fallback when
+   the sibling skill genuinely can't run.
+2. **`#doc-previews` is populated.** Every citation chip you can resolve carries a
+   `preview` payload, baked into `#doc-previews` (fill it from the data you already
+   read to resolve the citation — no second fetch). An empty `#doc-previews` beside
+   a page full of `.cite` chips means every hover card is dead.
+3. **Depth is folded, not cut.** Two altitudes per item — a one-line visible
+   surface and a `<details>` disclosure holding the full prose verbatim — and the
+   recorded sections carry *what happened*, not a highlight reel. See "The richness
+   floor" in `sections.md`.
+4. **`check.mjs` exits clean before you publish.** Run
+   `node references/check.mjs <path>` on the built file. It mechanically catches a
+   text Today, dead hovers, thin previews and every structural invariant. **Do not
+   publish a file it errors on** — fix the data and re-render.
+
 ## Where it lives
 
 Published as a **Claude Artifact** (private by default), at the URL stored in `#doc-state.artifactUrl`. A local `<repo-root>/.ignored/project-doc/index.html` may exist as a **build cache**, but it is not authoritative — the Artifact is. `<repo-root>` is found by walking up from cwd until a `.git` directory appears; refuse to guess a root. Any local cache under `.ignored/` must be git-ignored (`git check-ignore .ignored`; add `.ignored/` to `.gitignore` if not) — the document bakes in private scope and avatars.

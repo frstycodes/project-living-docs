@@ -178,10 +178,27 @@ if (discs !== bodies) err(`${discs} details.disc but ${bodies} .disc-body — ev
 const glyphs = html.match(/[▸▹►▶▾▿✓✔✕✗→←↑↓]/g);
 if (glyphs) err(`unicode glyphs where icons belong: ${[...new Set(glyphs)].join(' ')} — every marker comes from the sprites`);
 
+// {TODAY} — Today must be the daily-brief fragment (painting / to-dos / schedule)
+// or the explicit .callout.quiet fallback, never a hand-written prose stand-in.
+// This is the exact defect a real run produced: panel-today held only <p> prose.
+const todayM = html.match(/id="panel-today"[\s\S]*?(?=<div class="panel"|<div class="dial"|<\/main>)/);
+if (todayM) {
+  const t = todayM[0];
+  const hasBrief = /class="(?:frame|herofig|list|sched|ups|reads)\b/.test(t) || /class="[^"]*\bitem\b/.test(t);
+  const hasFallback = /class="callout[^"]*\bquiet\b/.test(t);
+  if (!hasBrief && !hasFallback)
+    err('#panel-today has no daily-brief fragment (no painting, to-dos or schedule) and no .callout.quiet fallback — Today is a hand-written text stand-in; invoke the daily-brief skill for it');
+}
+
 // {PREVIEW COVERAGE} — against the rendered HTML (previews built once, above)
 const cited = new Set([...html.matchAll(/data-cite="([^"]+)"/g)].map((m) => m[1]));
 for (const k of cited) if (!(k in previews)) err(`chip data-cite="${k}" has no #doc-previews entry — a dead hover`);
 for (const k of Object.keys(previews)) if (!cited.has(k)) warn(`#doc-previews carries unreferenced key "${k}"`);
+// the richness floor wants most resolvable chips hydrated with a preview, not
+// left as bare links — a run with many chips and almost no previews under-fetched
+const citeTotal = count(/class="cite"/g);
+if (citeTotal >= 8 && cited.size / citeTotal < 0.5)
+  warn(`only ${cited.size} of ${citeTotal} citation chips carry a preview payload — the richness floor wants most chips hydrated (bake #doc-previews from what you already read to resolve them)`);
 // every preview kind must be one the card builder handles — an unknown kind
 // still renders (as the generic link card), but it is almost always a typo, so
 // warn rather than pass silently

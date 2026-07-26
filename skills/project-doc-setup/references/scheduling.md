@@ -30,16 +30,20 @@ If they accept, give them exactly two things.
 ### 1. The paste-ready routine prompt
 
 A cloud routine has **no local skills and no `/plugin`**, so the prompt tells the
-agent to `curl` the refresh skill from GitHub and follow it — the SKILL.md's
-refresh branch carries the whole protocol, so the prompt states only what the skill
-can't: *which* Artifact, and the notify choice. Fill in the real `artifactUrl` (and
-drop or keep the DM line per the user's choice):
+agent to **clone** the skill repo from GitHub and follow it — clone, not curl, so
+every reference file (`update-protocol.md`, the richness floor, `check.mjs`) is on
+disk; a curl of the lone SKILL.md yields a thin, preview-less refresh. The prompt
+states only what the skill can't know: *which* Artifact, and the notify choice.
+Fill in the real `artifactUrl` (and drop or keep the DM line per the user's
+choice):
 
 ```
-Every hour, refresh my project living document. Fetch this skill and follow its
+Every hour, refresh my project living document. Clone the skill and follow its
 refresh branch exactly:
-  curl -sSL https://raw.githubusercontent.com/frstycodes/project-living-docs/main/skills/project-doc/SKILL.md
-Resolve referenced files against the same base (…/main/skills/…), run .mjs with node.
+  git clone --depth 1 https://github.com/frstycodes/project-living-docs /tmp/pld
+Read /tmp/pld/skills/project-doc/SKILL.md and follow the refresh branch, including
+every reference file it links. Run the locked .mjs with node, and do NOT republish
+unless `node check.mjs` on the built file exits clean.
 Refresh the doc at <ARTIFACT_URL>. Publish silently; on a change, DM me the URL —
 never a project or shared channel. (Drop the DM clause for no ping at all.)
 ```
